@@ -69,40 +69,175 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="log">Console Log</button>
+      <button id="error">Console Error</button>
+      <button id="count">Console Count</button>
+      <button id="warn">Console Warn</button>
+      <button id="assert">Console Assert</button>
+      <button id="clear">Console Clear</button>
+      <button id="dir">Console Dir</button>
+      <button id="dirxml">Console dirxml</button>
+      <button id="startGroup">Console Group Start</button>
+      <button id="endGroup">Console Group End</button>
+      <button id="table">Console Table</button>
+      <button id="startTimer">Start Timer</button>
+      <button id="endTimer">End Timer</button>
+      <button id="trace">Console Trace</button>
+      <button id="globalError">Trigger a Global Error</button>
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+<script>
+  window.TrackJS && TrackJS.install({ 
+    token: "b6c3d9216d5b426da9a75d669433cacd"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+</script>
+                        
   <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
+      let secondNum;
+      try{
+        secondNum = document.querySelector('#second-num').value;
+      } catch{
+        console.log("Error: second number invalid");
+        secondNum = 0;
+      } finally{
+        let operator = document.querySelector('#operator').value;
+        try{
+          console.log(operator);
+          if (operator == '/') {
+            if (secondNum == 0) {
+              throw new DivideByZeroError();
+            }
+          }  
+        } catch(error){
+            console.log(err.message);
+            secondNum = 1;
+      }      
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+    }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    let log = document.getElementById("log");
+    log.addEventListener("click", function(event) {
+      console.log("Console Log Demo");
+    });
+
+    let error = document.getElementById("error");
+    error.addEventListener("click", function(event) {
+      console.error("Console Error Demo");
+    });
+
+    let count = document.getElementById("count");
+    count.addEventListener("click", function(event) {
+      console.count();
+    })
+
+    let warn = document.getElementById("warn");
+    warn.addEventListener("click", function(event) {
+      console.warn("Console Warn Button");
+    });
+
+    let assert = document.getElementById("assert");
+    assert.addEventListener("click", function(event) {
+      console.assert(2 == 3, "The number does not equal 3");
+    });
+
+    let clear = document.getElementById("clear");
+    clear.addEventListener("click", function(event) {
+      console.clear();
+    });
+
+    let dir = document.getElementById("dir");
+    dir.addEventListener("click", function(event) {
+      console.dir(dir);
+    });
+
+    let dirxml = document.getElementById("dirxml");
+    dirxml.addEventListener("click", function(event) {
+      console.dirxml(dirxml);
+    });
+
+    let startGroup = document.getElementById("startGroup");
+    startGroup.addEventListener("click", function(event) {
+      console.group("console.group");
+    });
+
+    let endGroup = document.getElementById("endGroup");
+    endGroup.addEventListener("click", function(event) {
+      console.groupEnd();
+    });
+
+    let table = document.getElementById("table");
+    table.addEventListener("click", function(event) {
+      console.table([{
+        "name": "Software Engineering",
+        "idnum": 110,
+      }, {
+        "name": "Programming Languages",
+        "idnum": 130,
+      }, {
+        "name": "Advances Software Engineering",
+        "idnum": 112,
+      }]);
+    });
+
+    let startTimer = document.getElementById("startTimer");
+    startTimer.addEventListener("click", function(event) {
+      console.time("Timer Button");
+    });
+
+    let endTimer = document.getElementById("endTimer");
+    endTimer.addEventListener("click", function(event) {
+      console.timeEnd("Timer Button");
+    });
+
+    let trace = document.getElementById("trace");
+    trace.addEventListener("click", function handleBtnClick(event) {
+      deep();
+    });
+
+    function deep() {
+      deeper();
+    }
+
+    function deeper() {
+      deepest();
+    }
+
+    function deepest() {
+      console.trace();
+    }
+
+    class DivideByZeroError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "Error: can't divide by 0!";
+      }
+    }
+
+    let globalError = document.getElementById("globalError");
+    globalError.addEventListener("click", function(event) {
+      throw new Error("Global Error");
+    });
+
+    window.onerror = function(message, url, line, col, error) {
+      console.log("Sorry an error happened my friend");
+      console.log(message);
+    };
+
   </script>
+  
 </body>
 
 </html>
